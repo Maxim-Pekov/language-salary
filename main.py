@@ -96,7 +96,7 @@ def get_information_by_languages():
     avarage_salaries = {}
     for language in languages:
         avarage_salaries[language] = get_information_by_language(language)
-    pprint(avarage_salaries)
+    # pprint(avarage_salaries)
     return avarage_salaries
 
 

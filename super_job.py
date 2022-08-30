@@ -6,7 +6,7 @@ from environs import Env
 
 def predict_rub_salary_for_superJob(y):
     # pprint(y)
-    from_ = y['payment_from']
+    from_ = int(y['payment_from'])
     to_ = int(y['payment_to'])
     if not y:
         return None
@@ -18,8 +18,6 @@ def predict_rub_salary_for_superJob(y):
         return to_ * 0.8
     else:
         return None
-
-
     return None
 
 
@@ -41,15 +39,17 @@ def get_information_by_language(language):
     response = requests.get(url, headers=headers, params=params)
     response.raise_for_status()
     z = response.json()
-    pprint(z)
+    # pprint(z)
     vacancies += z['objects']
     for x in vacancies:
         if predict_rub_salary_for_superJob(x):
             all_salaries.append(predict_rub_salary_for_superJob(x))
     information_by_language['vacancies_found'] = z['total']
     information_by_language['vacancies_processed'] = len(all_salaries)
-    information_by_language['average_salary'] = int(sum(all_salaries) / len(all_salaries))
-
+    if len(all_salaries) != 0:
+        information_by_language['average_salary'] = int(sum(all_salaries) / len(all_salaries))
+    else:
+        information_by_language['average_salary'] = 0
     return information_by_language
 
 
@@ -59,7 +59,7 @@ def get_information_by_languages():
     avarage_salaries = {}
     for language in languages:
         avarage_salaries[language] = get_information_by_language(language)
-    pprint(avarage_salaries)
+    # pprint(avarage_salaries)
     return avarage_salaries
 
 
@@ -82,7 +82,7 @@ def main():
     pprint(z)
     for i in z['objects']:
         salary = predict_rub_salary_for_superJob(i)
-        print(f"{i['profession']} - {i['town']['title']} - {salary}")
+        # print(f"{i['profession']} - {i['town']['title']} - {salary}")
 
 
 if __name__ == '__main__':
