@@ -62,26 +62,37 @@ def predict_rub_salary(x):
 
 
 def get_information_by_language(language):
+    information_by_language = {}
+    all_salaries = []
+    page = 0
+    pages = 1
+    vacancies = []
     params = {
         'text': f'программист {language}',
-        'area': 1
+        'area': 1,
+        'page': page
     }
-    response = requests.get(url, headers=headers, params=params)
-    response.raise_for_status()
-    z = response.json()
-    all_salaries = []
-    information_by_language = {}
-    for x in z['items']:
+    while page < pages:
+        response = requests.get(url, headers=headers, params=params)
+        response.raise_for_status()
+        z = response.json()
+        # print(len(vacancies))
+        vacancies += z['items']
+        pages = z['pages']
+        page += 1
+    for x in vacancies:
         if predict_rub_salary(x):
             all_salaries.append(predict_rub_salary(x))
     information_by_language['vacancies_found'] = get_count_vacancies(language)
     information_by_language['vacancies_processed'] = len(all_salaries)
     information_by_language['average_salary'] = int(sum(all_salaries) / len(all_salaries))
+
     return information_by_language
 
 
 def get_information_by_languages():
-    languages = ['Python', 'Java', 'JavaScript', 'Ruby', 'C', 'C++', 'C#', 'Go', 'PHP', 'Objective-C', 'Scala', 'Swift']
+    # languages = ['Python', 'Java', 'JavaScript', 'Ruby', 'C', 'C++', 'C#', 'Go', 'PHP', 'Objective-C', 'Scala', 'Swift']
+    languages = ['Python', 'Java']
     avarage_salaries = {}
     for language in languages:
         avarage_salaries[language] = get_information_by_language(language)
