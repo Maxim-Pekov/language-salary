@@ -1,46 +1,49 @@
-from pprint import pprint
-
 import requests
 
+from environs import Env
+from pprint import pprint
+
+
+env = Env()
+env.read_env()
+email = env.str('EMAIL')
+
 headers = {
-    'User-Agent': 'MyHH_MaxPek/1.0 (MM)'
+    'User-Agent': f'MyHH_MaxPek/1.0 ({email})'
 }
+
 url = 'https://api.hh.ru/vacancies'
 
-def x():
-    response = requests.get('https://api.hh.ru/areas/2')
-    pprint(response.json())
-def main(q):
-    params = {
-        'text': f'программист {q}',
-        'area': 2
-    }
-    response = requests.get(url, headers=headers, params=params)
-    response.raise_for_status()
-    z = response.json()
-    # pprint(z['items'][0]['salary'])
-    count = 0
-    # print()
-    # for s in z['items']:
-    #     if s['published_at'] > '2022-07-27':
-    #         count += 1
-    #         pprint(s['created_at'])
-    # pprint(z['items'][0]['created_at'])
-    # print(count)
-    return z['found']
 
-def salary(language):
+def get_count_vacancies(language):
     params = {
         'text': f'программист {language}',
-        'area': 1
+        'area': 1    # index by Moscow
     }
     response = requests.get(url, headers=headers, params=params)
     response.raise_for_status()
     z = response.json()
-    for x in z['items']:
-        pprint(x['salary'])
-        pprint(predict_rub_salary(x))
+    return z.get('found')
 
+# def salary(language):
+#     params = {
+#         'text': f'программист {language}',
+#         'area': 1
+#     }
+#     response = requests.get(url, headers=headers, params=params)
+#     response.raise_for_status()
+#     z = response.json()
+#     average_salary = []
+#     num = 0
+#     for numerate, x in enumerate(z['items']):
+#         if predict_rub_salary(x):
+#             average_salary.append(predict_rub_salary(x))
+#             num = numerate
+#         pprint(x['salary'])
+#         pprint(predict_rub_salary(x))
+#     print(sum(average_salary)/num)
+#     print()
+#     # print([get_count_vacancy(language), num, (average_salary)])
 
 
 def predict_rub_salary(x):
@@ -57,14 +60,35 @@ def predict_rub_salary(x):
             return None
     return None
 
-if __name__ == '__main__':
-    slovar = {}
-    w = ['Python', 'Java', 'JavaScript', 'Ruby', 'C', 'C++', 'C#', 'Go', 'PHP', 'Objective-C', 'Scala', 'Swift']
-    for q in w:
-        slovar[q] = main(q)
-    pprint(slovar)
-    x()
-    salary('python')
-    # main()
 
+def get_information_by_language(language):
+    params = {
+        'text': f'программист {language}',
+        'area': 1
+    }
+    response = requests.get(url, headers=headers, params=params)
+    response.raise_for_status()
+    z = response.json()
+    all_salaries = []
+    information_by_language = {}
+    for x in z['items']:
+        if predict_rub_salary(x):
+            all_salaries.append(predict_rub_salary(x))
+    information_by_language['vacancies_found'] = get_count_vacancies(language)
+    information_by_language['vacancies_processed'] = len(all_salaries)
+    information_by_language['average_salary'] = int(sum(all_salaries) / len(all_salaries))
+    return information_by_language
+
+
+def get_information_by_languages():
+    languages = ['Python', 'Java', 'JavaScript', 'Ruby', 'C', 'C++', 'C#', 'Go', 'PHP', 'Objective-C', 'Scala', 'Swift']
+    avarage_salaries = {}
+    for language in languages:
+        avarage_salaries[language] = get_information_by_language(language)
+    pprint(avarage_salaries)
+    return avarage_salaries
+
+
+if __name__ == '__main__':
+    get_information_by_languages()
 
