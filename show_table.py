@@ -1,10 +1,6 @@
-from terminaltables import AsciiTable, SingleTable, DoubleTable
-import super_job
-import main
-
-z = super_job.get_information_by_languages()
-hh = main.get_information_by_languages()
-
+from terminaltables import AsciiTable
+import fetch_average_super_job_salary
+import fetch_average_head_hunter_salary
 
 
 def print_table(data, name):
@@ -15,15 +11,16 @@ def print_table(data, name):
     for i in data:
         table_data.append([i, data[i]['vacancies_found'], data[i]['vacancies_processed'], data[i]['average_salary']], )
     table_instance = AsciiTable(table_data, title)
-    table_instance.justify_columns[2] = 'center'
+    for i in range(4): table_instance.justify_columns[i] = 'center'
     print(table_instance.table)
     print()
 
 
-
 def main():
-    print_table(z, 'Super Job Moscow')
-    print_table(hh, 'Head Hunter Moscow')
+    super_job_data = fetch_average_super_job_salary.get_salary_information_by_languages()
+    head_hunter_data = fetch_average_head_hunter_salary.get_salary_information_by_languages()
+    print_table(super_job_data, f'Super Job Moscow')
+    print_table(head_hunter_data, f'Head Hunter Moscow')
 
 
 if __name__ == '__main__':
