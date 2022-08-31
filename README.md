@@ -1,7 +1,7 @@
 # language-salary
 
 This is a script get average salaries by language in Moscow.
-
+![](../../../../../../Pictures/Screenshots/12.jpg)
 ## How does he work:
 
 1. If you run the `show_table.py script`, you will see tables in the console with information on vacancies and average salaries by programming languages, from several job aggregators.
