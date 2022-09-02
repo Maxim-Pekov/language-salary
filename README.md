@@ -31,7 +31,7 @@ python -m venv venv
 .\venv\Scripts\activate         #windows
 source ./venv/bin/activate      #Linux, Mac  
 ```
-3. Go to the `./Api_cosmos` directory
+3. Go to the `./language-salary` directory
 4. Install requirements
 ```python
 pip install -r requirements.txt
