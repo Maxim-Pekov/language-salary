@@ -6,11 +6,11 @@ from environs import Env
 env = Env()
 env.read_env()
 email = env.str('EMAIL')
-url = 'https://api.hh.ru/vacancies'
+URL = 'https://api.hh.ru/vacancies'
 
 
 def get_count_vacancies(params, headers):
-    response = requests.get(url, headers=headers, params=params)
+    response = requests.get(URL, headers=headers, params=params)
     response.raise_for_status()
     vacancies_json = response.json()
     count_vacancies = vacancies_json.get('found')

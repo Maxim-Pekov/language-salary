@@ -6,8 +6,8 @@ from environs import Env
 env = Env()
 env.read_env()
 secret_key = env.str('SECRET_KEY_SUPER_JOB')
-town = 'Moscow'
-url = 'https://api.superjob.ru/2.0/vacancies/'
+TOWN = 'Moscow'
+URL = 'https://api.superjob.ru/2.0/vacancies/'
 
 
 def get_rub_salary(vacancy):
@@ -32,12 +32,12 @@ def get_information_vacancies_by_language(language):
     vacancies = []
     items_in_page = 100
     params = {
-        'town': town,
+        'town': TOWN,
         'keyword': f'программирование, {language}',
         'count': items_in_page,
         'page': 5
     }
-    response = requests.get(url, headers=headers, params=params)
+    response = requests.get(URL, headers=headers, params=params)
     response.raise_for_status()
     vacancies_json = response.json()
     vacancies += vacancies_json.get('objects')
