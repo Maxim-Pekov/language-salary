@@ -46,11 +46,11 @@ def get_information_vacancies_by_language(language):
         'User-Agent': f'MyHH_MaxPek/1.0 ({email})'
     }
     while page < pages:
-        response = requests.get(url, headers=headers, params=params)
+        response = requests.get(URL, headers=headers, params=params)
         response.raise_for_status()
-        vacancies_json = response.json()
-        vacancies += vacancies_json.get('items')
-        pages = vacancies_json.get('pages')
+        vacancies_information = response.json()
+        vacancies += vacancies_information.get('items')
+        pages = vacancies_information.get('pages')
         page += 1
     for vacancy in vacancies:
         if get_rub_salary(vacancy):

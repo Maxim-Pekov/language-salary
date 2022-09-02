@@ -39,12 +39,12 @@ def get_information_vacancies_by_language(language):
     }
     response = requests.get(URL, headers=headers, params=params)
     response.raise_for_status()
-    vacancies_json = response.json()
-    vacancies += vacancies_json.get('objects')
+    vacancies_information = response.json()
+    vacancies += vacancies_information.get('objects')
     for vacancy in vacancies:
         if get_rub_salary(vacancy):
             all_salaries.append(get_rub_salary(vacancy))
-    information_by_language['vacancies_found'] = vacancies_json['total']
+    information_by_language['vacancies_found'] = vacancies_information['total']
     information_by_language['vacancies_processed'] = len(all_salaries)
     if len(all_salaries) != 0:
         information_by_language['average_salary'] = int(sum(all_salaries) / len(all_salaries))
