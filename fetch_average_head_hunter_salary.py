@@ -50,9 +50,9 @@ def get_information_vacancies_by_language(language, email):
         pages = vacancies_information.get('pages')
         page += 1
     all_salaries = [get_rub_salary(vacancy) for vacancy in vacancies if get_rub_salary(vacancy)]
-    count_vacancies = response.json().get('found')
-    information_by_language['vacancies_found'] = count_vacancies
-    information_by_language['vacancies_processed'] = len(all_salaries)
+    vacancies_count = response.json().get('found')
+    information_by_language['found_vacancies'] = vacancies_count
+    information_by_language['processed_vacancies'] = len(all_salaries)
     information_by_language['average_salary'] = int(sum(all_salaries) / len(all_salaries))
     return information_by_language
 
