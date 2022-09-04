@@ -3,7 +3,6 @@ import requests
 from environs import Env
 
 
-
 URL = 'https://api.hh.ru/vacancies'
 
 
@@ -50,9 +49,7 @@ def get_information_vacancies_by_language(language, email):
         vacancies += vacancies_information.get('items')
         pages = vacancies_information.get('pages')
         page += 1
-    for vacancy in vacancies:
-        if get_rub_salary(vacancy):
-            all_salaries.append(get_rub_salary(vacancy))
+    all_salaries = [get_rub_salary(vacancy) for vacancy in vacancies if get_rub_salary(vacancy)]
     count_vacancies = response.json().get('found')
     information_by_language['vacancies_found'] = count_vacancies
     information_by_language['vacancies_processed'] = len(all_salaries)
