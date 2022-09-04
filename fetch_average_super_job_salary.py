@@ -5,6 +5,7 @@ from environs import Env
 TOWN = 'Moscow'
 URL = 'https://api.superjob.ru/2.0/vacancies/'
 
+
 def get_rub_salary(vacancy):
     from_ = int(vacancy.get('payment_from'))
     to_ = int(vacancy.get('payment_to'))
@@ -25,17 +26,22 @@ def get_information_vacancies_by_language(language, secret_key):
     information_by_language = {}
     all_salaries = []
     vacancies = []
+    page = 0
+    max_api_objects = 500
     items_in_page = 100
+    pages = max_api_objects / items_in_page
     params = {
         'town': TOWN,
         'keyword': f'программирование, {language}',
         'count': items_in_page,
-        'page': 5
+        'page': page
     }
-    response = requests.get(URL, headers=headers, params=params)
-    response.raise_for_status()
-    vacancies_information = response.json()
-    vacancies += vacancies_information.get('objects')
+    while page < pages:
+        response = requests.get(URL, headers=headers, params=params)
+        response.raise_for_status()
+        vacancies_information = response.json()
+        vacancies += vacancies_information.get('objects')
+        page += 1
     for vacancy in vacancies:
         if get_rub_salary(vacancy):
             all_salaries.append(get_rub_salary(vacancy))
@@ -60,7 +66,7 @@ def main():
     env = Env()
     env.read_env()
     secret_key = env.str('SECRET_KEY_SUPER_JOB')
-    print(get_salary_information_by_languages(secret_key))
+    get_salary_information_by_languages(secret_key)
 
 
 if __name__ == '__main__':
