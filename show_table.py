@@ -1,6 +1,6 @@
 from terminaltables import AsciiTable
-import fetch_average_super_job_salary
-import fetch_average_head_hunter_salary
+import fetch_average_super_job_salary, fetch_average_head_hunter_salary
+from dotenv import dotenv_values
 
 
 def print_table(average_salaries, table_name):
@@ -19,10 +19,11 @@ def print_table(average_salaries, table_name):
 
 
 def main():
-    super_job_average_salaries = fetch_average_super_job_salary.get_salary_information_by_languages()
-    # head_hunter_average_salaries = fetch_average_head_hunter_salary.get_salary_information_by_languages()
+    config = dotenv_values(".env")  # config = {"USER": "foo", "EMAIL": "foo@example.org"}
+    super_job_average_salaries = fetch_average_super_job_salary.get_salary_information_by_languages(config.get('SECRET_KEY_SUPER_JOB'))
+    head_hunter_average_salaries = fetch_average_head_hunter_salary.get_salary_information_by_languages(config.get('EMAIL'))
     print_table(super_job_average_salaries, f'Super Job Moscow')
-    # print_table(head_hunter_average_salaries, f'Head Hunter Moscow')
+    print_table(head_hunter_average_salaries, f'Head Hunter Moscow')
 
 
 if __name__ == '__main__':

@@ -3,9 +3,7 @@ import requests
 from environs import Env
 
 
-env = Env()
-env.read_env()
-email = env.str('EMAIL')
+
 URL = 'https://api.hh.ru/vacancies'
 
 
@@ -31,7 +29,7 @@ def get_rub_salary(vacancy):
             return None
 
 
-def get_information_vacancies_by_language(language):
+def get_information_vacancies_by_language(language, email):
     information_by_language = {}
     all_salaries = []
     page = 0
@@ -62,14 +60,22 @@ def get_information_vacancies_by_language(language):
     return information_by_language
 
 
-def get_salary_information_by_languages():
+def get_salary_information_by_languages(email):
     languages = ['Python', 'Java', 'JavaScript', 'Ruby', 'C', 'C++', 'C#', 'Go', 'PHP', 'Objective-C', 'Scala', 'Swift']
     average_salaries = {}
     for language in languages:
-        average_salaries[language] = get_information_vacancies_by_language(language)
+        average_salaries[language] = get_information_vacancies_by_language(language, email)
     return average_salaries
 
 
+def main():
+    env = Env()
+    env.read_env()
+    email = env.str('EMAIL')
+    get_salary_information_by_languages(email)
+
+
 if __name__ == '__main__':
-    get_salary_information_by_languages()
+    main()
+
 
