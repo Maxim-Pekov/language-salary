@@ -1,25 +1,11 @@
 import requests
-from environs import Env
 from get_rub_salary import get_rub_salary
+
+from environs import Env
 
 
 TOWN = 'Moscow'
 URL = 'https://api.superjob.ru/2.0/vacancies/'
-
-
-# def get_rub_salary(vacancy):
-#     from_ = int(vacancy.get('payment_from'))
-#     to_ = int(vacancy.get('payment_to'))
-#     if not vacancy:
-#         return None
-#     if from_ and to_:
-#         return (from_ + to_) // 2
-#     elif from_ and not to_:
-#         return from_ * 1.2
-#     elif to_ and not from_:
-#         return to_ * 0.8
-#     else:
-#         return None
 
 
 def get_information_vacancies_by_language(language, secret_key):
@@ -48,9 +34,9 @@ def get_information_vacancies_by_language(language, secret_key):
         salary_to = int(vacancy.get('payment_to'))
         if rub_salary := get_rub_salary(salary_from, salary_to):
             all_salaries.append(rub_salary)
-    information_by_language['found_vacancies'] = vacancies_information['total']
-    information_by_language['processed_vacancies'] = len(all_salaries)
-    if len(all_salaries):
+    information_by_language['found_vacancies'] = len(all_salaries)
+    information_by_language['processed_vacancies'] = vacancies_information['total']
+    if information_by_language['processed_vacancies']:
         information_by_language['average_salary'] = int(sum(all_salaries) / len(all_salaries))
     else:
         information_by_language['average_salary'] = 0
@@ -58,8 +44,7 @@ def get_information_vacancies_by_language(language, secret_key):
 
 
 def get_salary_information_by_languages(secret_key):
-    # languages = ['Python', 'Java', 'JavaScript', 'Ruby', 'C', 'C++', 'C#', 'Go', 'PHP', 'Objective-C', 'Scala', 'Swift']
-    languages = ['Python', 'Java']
+    languages = ['Python', 'Java', 'JavaScript', 'Ruby', 'C', 'C++', 'C#', 'Go', 'PHP', 'Objective-C', 'Scala', 'Swift']
     average_salaries = {}
     for language in languages:
         average_salaries[language] = get_information_vacancies_by_language(language, secret_key)

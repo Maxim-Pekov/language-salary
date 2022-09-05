@@ -1,7 +1,8 @@
 import requests
+from get_rub_salary import get_rub_salary
 
 from environs import Env
-from get_rub_salary import get_rub_salary
+
 
 URL = 'https://api.hh.ru/vacancies'
 
@@ -22,6 +23,7 @@ def get_rub_salary_1(vacancy):
     if vacancy.get('salary').get('currency') == 'RUR':
         rub_salary = get_rub_salary(salary_from, salary_to)
         return rub_salary
+
 
 def get_information_vacancies_by_language(language, email):
     information_by_language = {}
@@ -47,16 +49,18 @@ def get_information_vacancies_by_language(language, email):
     for vacancy in vacancies:
         if rub_salary := get_rub_salary_1(vacancy):
             all_salaries.append(rub_salary)
-    vacancies_count = response.json().get('found')
+    vacancies_count = vacancies_information.get('found')
     information_by_language['found_vacancies'] = vacancies_count
     information_by_language['processed_vacancies'] = len(all_salaries)
-    information_by_language['average_salary'] = int(sum(all_salaries) / len(all_salaries))
+    if information_by_language['processed_vacancies']:
+        information_by_language['average_salary'] = int(sum(all_salaries) / len(all_salaries))
+    else:
+        information_by_language['average_salary'] = 0
     return information_by_language
 
 
 def get_salary_information_by_languages(email):
-    # languages = ['Python', 'Java', 'JavaScript', 'Ruby', 'C', 'C++', 'C#', 'Go', 'PHP', 'Objective-C', 'Scala', 'Swift']
-    languages = ['Python', 'Java']
+    languages = ['Python', 'Java', 'JavaScript', 'Ruby', 'C', 'C++', 'C#', 'Go', 'PHP', 'Objective-C', 'Scala', 'Swift']
     average_salaries = {}
     for language in languages:
         average_salaries[language] = get_information_vacancies_by_language(language, email)
