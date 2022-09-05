@@ -36,7 +36,7 @@ def get_information_vacancies_by_language(language, secret_key):
             all_salaries.append(rub_salary)
     information_by_language['found_vacancies'] = len(all_salaries)
     information_by_language['processed_vacancies'] = vacancies_information['total']
-    if information_by_language['processed_vacancies']:
+    if information_by_language['found_vacancies']:
         information_by_language['average_salary'] = int(sum(all_salaries) / len(all_salaries))
     else:
         information_by_language['average_salary'] = 0
