@@ -1,7 +1,7 @@
 import requests
 
 from environs import Env
-
+from get_rub_salary import get_rub_salary
 
 URL = 'https://api.hh.ru/vacancies'
 
@@ -14,26 +14,21 @@ def get_count_vacancies(params, headers):
     return count_vacancies
 
 
-def get_rub_salary(vacancy):
+def get_rub_salary_1(vacancy):
     if not vacancy.get('salary'):
         return None
+    salary_from = vacancy['salary']['from']
+    salary_to = vacancy['salary']['to']
     if vacancy.get('salary').get('currency') == 'RUR':
-        if vacancy['salary']['from'] and vacancy['salary']['to']:
-            return (vacancy['salary']['from'] + vacancy['salary']['to']) // 2
-        elif vacancy['salary']['from'] and not vacancy['salary']['to']:
-            return vacancy['salary']['from'] * 1.2
-        elif vacancy['salary']['to'] and not vacancy['salary']['from']:
-            return vacancy['salary']['to'] * 0.8
-        else:
-            return None
-
+        rub_salary = get_rub_salary(salary_from, salary_to)
+        return rub_salary
 
 def get_information_vacancies_by_language(language, email):
     information_by_language = {}
-    all_salaries = []
     page = 0
     pages = 1
     vacancies = []
+    all_salaries = []
     params = {
         'text': f'программист {language}',
         'area': 1,   # Moscow id
@@ -49,7 +44,9 @@ def get_information_vacancies_by_language(language, email):
         vacancies += vacancies_information.get('items')
         pages = vacancies_information.get('pages')
         page += 1
-    all_salaries = [get_rub_salary(vacancy) for vacancy in vacancies if get_rub_salary(vacancy)]
+    for vacancy in vacancies:
+        if rub_salary := get_rub_salary_1(vacancy):
+            all_salaries.append(rub_salary)
     vacancies_count = response.json().get('found')
     information_by_language['found_vacancies'] = vacancies_count
     information_by_language['processed_vacancies'] = len(all_salaries)
@@ -58,7 +55,8 @@ def get_information_vacancies_by_language(language, email):
 
 
 def get_salary_information_by_languages(email):
-    languages = ['Python', 'Java', 'JavaScript', 'Ruby', 'C', 'C++', 'C#', 'Go', 'PHP', 'Objective-C', 'Scala', 'Swift']
+    # languages = ['Python', 'Java', 'JavaScript', 'Ruby', 'C', 'C++', 'C#', 'Go', 'PHP', 'Objective-C', 'Scala', 'Swift']
+    languages = ['Python', 'Java']
     average_salaries = {}
     for language in languages:
         average_salaries[language] = get_information_vacancies_by_language(language, email)
