@@ -15,7 +15,7 @@ def get_count_vacancies(params, headers):
     return count_vacancies
 
 
-def get_rub_salary_1(vacancy):
+def get_rub_salary(vacancy):
     if not vacancy.get('salary'):
         return None
     salary_from = vacancy['salary']['from']
@@ -47,7 +47,7 @@ def get_information_vacancies_by_language(language, email):
         pages = vacancies_information.get('pages')
         page += 1
     for vacancy in vacancies:
-        if rub_salary := get_rub_salary_1(vacancy):
+        if rub_salary := get_rub_salary(vacancy):
             all_salaries.append(rub_salary)
     vacancies_count = vacancies_information.get('found')
     information_by_language['found_vacancies'] = vacancies_count
