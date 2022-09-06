@@ -7,14 +7,6 @@ from environs import Env
 URL = 'https://api.hh.ru/vacancies'
 
 
-def get_count_vacancies(params, headers):
-    response = requests.get(URL, headers=headers, params=params)
-    response.raise_for_status()
-    vacancies_json = response.json()
-    count_vacancies = vacancies_json.get('found')
-    return count_vacancies
-
-
 def get_rub_salary(vacancy):
     if not vacancy.get('salary'):
         return None
