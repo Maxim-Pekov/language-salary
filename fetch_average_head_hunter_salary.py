@@ -52,7 +52,7 @@ def get_information_vacancies_by_language(language, email):
     vacancies_count = vacancies_information.get('found')
     information_by_language['found_vacancies'] = vacancies_count
     information_by_language['processed_vacancies'] = len(all_salaries)
-    if information_by_language['processed_vacancies']:
+    if all_salaries:
         information_by_language['average_salary'] = int(sum(all_salaries) / len(all_salaries))
     else:
         information_by_language['average_salary'] = 0
